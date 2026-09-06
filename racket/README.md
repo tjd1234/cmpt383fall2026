@@ -6,8 +6,10 @@ The [Racket problem set](Racket_problemset.md).
 
 ## Installing Racket
 
-Please use the [DrRacket IDE](https://racket-lang.org/). We won't use the
-command-line version.
+Please use the [DrRacket IDE](https://racket-lang.org/).
+
+See [tiny-lisp](tiny-lisp/README.md) for more information on how to install and
+use the tiny-lisp language (a minimal Lisp with a small set of primitives).
 
 ## Coding Style
 
