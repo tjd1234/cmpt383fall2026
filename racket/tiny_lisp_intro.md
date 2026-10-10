@@ -626,7 +626,7 @@ is:
 0
 > (length '(a b c))
 3
-> (length '(the (quick brown) fox (jump over)))
+> (length '(the (quick brown) fox (jumped over)))
 4
 ```
 
@@ -1075,23 +1075,403 @@ Like `length`, `sum` uses more memory than `sum2` because it builds up the list
 
 ### map a list
 
-Coming soon!
+`(map f L)` returns a new list that is the result of applying the function `f`
+to each element of the list `L`. For example, `(map square '(1 2 3))` returns
+`(1 4 9)`, and `(map (lambda (x) (+ x 1)) '(1 2 3))` returns `(2 3 4)`.
+
+In the call `(map fn L)`,  `fn` is a function that takes one input, and L is a
+list of 0 or more elements that `fn` can be applied to. `fn` is often written as
+a lambda expression.
+
+The recursive idea for implementing `map` is:
+
+- return an empty list if `L` is empty
+- otherwise, return the result of applying `f` to the first element of `L`
+  followed by the result of `(map f (rest L))`
+
+```lisp
+(define (map fn L)
+  (cond [(empty? L)
+         '()]
+        [else
+         (cons (fn (first L))
+               (map fn (rest L)))]))
+```
+
+`map` calls `fn` exactly once for each element of `L`, and so the running time
+is proportional to the length of `L`. If `fn` is a constant-time operation, then
+`map` is a linear-time operation. If `fn` is a linear-time operation, then `map`
+is a quadratic-time operation.
+
+`map` is quite useful in practice, and most modern programming languages have a
+`map` function in some form. For example, in Python list comprehensions are a
+form of `map`:
+
+```
+Python:
+[x * x for x in [1, 2, 3]]
+
+Lisp:
+(map (lambda (x) (* x x)) '(1 2 3))
+```
+
+Note that  `(map fn L)` always returns a list that is the same length as the
+list `L`. `map` cannot increase or decrease the length of the list.
 
 ### filter a list
 
-Coming soon!
+The function `(filter pred? L)` returns a new list that is the contains just the
+elements of `L` that satisfy the predicate `pred?`. For example, `(filter even?
+'(1 2 3 4 5))` returns `(2 4)`, and `(filter (lambda (x) (> x 3)) '(1 2 3 4 5))`
+returns `(4 5)`.
 
-### any and all
+`pred?` is a function that takes one input, and returns a boolean value, i.e.
+`#t` or `#f`. `L` is a list of 0 or more elements that `pred?` can be applied
+to. As with `map`, `pred?` is often written as a lambda expression.
 
-Coming soon!
+The recursive idea for implementing `filter` is:
+
+- return an empty list if `L` is empty
+- otherwise, if the first element of `L` satisfies `pred?`, return a new list
+  with the first element of `L` followed by the result of `(filter pred? (rest
+  L))`
+- otherwise, return the result of `(filter pred? (rest L))`
+
+```lisp
+(define (filter pred? L)
+  (cond [(empty? L)
+         '()]
+        [(pred? (first L))
+         (cons (first L)
+               (filter pred? (rest L)))]
+        [else
+         (filter pred? (rest L))]))
+```
+
+`pred?` is called exactly once for each element of `L`, and so the running time
+is proportional to the length of `L`. If `pred?` is a constant-time operation,
+then `filter` is a linear-time operation. If `pred?` is a linear-time operation,
+then `filter` is a quadratic-time operation.
+
+In practice, `filter` is quite useful and goes together well with `map`. For example, Python's list comprehensions are a form of `filter` and `map`:
+```
+Python:
+[x * x for x in [1, 2, 3, 4, 5] 
+       if x % 2 == 0]
+
+Lisp:
+(map (lambda (x) (* x x))
+     (filter even? '(1 2 3 4 5)))
+```
+
+### all
+
+`(all pred? L)` returns `#t` if all the elements of `L` satisfy the predicate.
+Or, a little more precisely, `(all pred? L)` returns `#t` just when there is no
+element in `L` that makes `pred?` return `#f`. 
+
+`pred?` is a boolean predication function that takes one input and returns `#t`
+or `#f`, while `L` is a list of 0 or more elements that `pred?` can be applied
+to.
+
+For example, `(all even? '(2 4 6))` returns `#t`, and `(all symbol? '(two 4
+five))` returns `#f`.
+
+The recursive idea for implementing `all` is:
+
+- return `#t` if `L` is empty
+
+- otherwise, if the first element of `L` satisfies `pred?`, return the result of
+  `(all pred? (rest L))`
+
+- otherwise, return `#f`
+
+```lisp
+(define (all pred? L)
+  (cond [(empty? L)
+         #t]
+        [else
+         (and (pred? (first L))
+              (all pred? (rest L)))]))
+```
+
+`pred?` is called exactly once for each element of `L`, and so the running time
+is proportional to the length of `L`. If `pred?` is a constant-time operation,
+then `all` is a linear-time operation. If `pred?` is a linear-time operation,
+then `all` is a quadratic-time operation.
+
+There is another way to implement `all` using `filter`. The idea is to filter on
+the elements that *don't* satisfy `pred?`. If that filtered list is length 0,
+then all the elements of `L` satisfy `pred?`. Otherwise, some element of `L`
+does not satisfy `pred?`, and so `all` returns `#f`:
+
+```lisp
+(define (all pred? L)
+  (empty? (filter (lambda (x) (not (pred? x))) 
+                  L)))
+```
+
+Unfortunately, this implementation is often slower than the recursive version.
+The recursive version ends as soon as `pred?` returns `#f`: there is no reason
+to keep checking once we know that the result is `#f`. 
+
+However, the `filter` version always calls `pred?` on all the elements of `L`,
+even if the very first element makes `pred?` return `#f`.
+
+Yet, despite it's slowness, the `filter` version is interesting because it is
+doesn't explicitly use recursion, and is instead built-up from simpler
+operations. For many programmers, it is easier to understand and reason about
+than the recursive version.
 
 ### folding a list
 
-Coming soon!
+**Folding** a list is a powerful technique that we'll introduce through an
+example. Consider the list `'(a b c d)`. We can write i ast a series of nested
+calls to `cons`:
 
-### earlier functions as folds
+```
+'(a b c d)
+= (cons 'a (cons 'b (cons 'c (cons 'd '()))))
+```
 
-Coming soon!
+We'll call the expression `(cons 'a (cons 'b (cons 'c (cons 'd '()))))` is
+called the **consed-out form** of the list `'(a b c d)`.
+
+Notice a few things:
+
+- `cons` is a **binary function**, i.e. it takes two inputs and returns one
+  output 
+
+- the second parameter for the last `cons` is the empty list `'()`
+
+Now imagine generalization the cons-ed out form to work with *any* binary
+function (on values that make sense for it). For instance, imagine replacing
+`cons` with `+`:
+
+```
+(+ 1 (+ 2 (+ 3 (+ 4 0))))
+= 10
+```
+
+This is the sum of the numbers in the list `'(1 2 3 4)`. Notice that instead of
+the empty list, the final value passed to the last `+` is 0, which makes sense
+for addition.
+
+If we replaced `cons` with `*`, we would get the product of the numbers:
+
+```
+(* 1 (* 2 (* 3 (* 4 1))))
+= 24
+```
+
+Notice again that last value passed to the last `*`: it is 1, because that makes
+sense for multiplication.
+
+Now lets generalize this. Suppose you have a list of elements `'(a b c d)`, a
+binary operator `op` that works those list values, and also we have the final
+value `init` for the last call to `op`. Then we can calculate the folded form of
+the list like this:
+
+```
+(op a (op b (op c (op d init))))
+```
+
+This is called a **fold**, or more specifically, a **right fold** because the
+brackets are nested to the right. In Lisp, it is usually called `foldr`, and
+would be called like this:
+
+```lisp
+(foldr op init '(a b c d))
+= (op a (op b (op c (op d init))))
+```
+
+To write `(foldr op init L)`, we can use this recursive idea:
+
+- return `init` if `L` is empty
+
+- otherwise, apply `op` to the first element of `L` and the result of `(foldr op
+  init (rest L))`
+
+```lisp
+(define (foldr op init L)
+  (cond [(empty? L)
+         init]
+        [else
+         (op (first L) 
+            (foldr op init (rest L)))]))
+
+> (foldr + 0 '(1 2 3 4))
+10
+> (foldr * 1 '(1 2 3 4))
+24
+> (foldr - 0 '(1 2 3 4))
+-2
+```
+
+## sum as a right fold
+
+We can implement `(sum L)` as a right fold:
+
+```lisp
+(define (sum L)
+  (foldr + 0 L))
+
+> (sum '(1 2 3 4))
+10
+```
+
+It is useful to trace a function call. Imagine calling `(sum '(1 2 3 4))`, and evaluating it step by step:
+
+```
+(sum '(1 2 3 4))
+= (foldr + 0 '(1 2 3 4))
+= (+ 1 (foldr + 0 '(2 3 4)))
+= (+ 1 (+ 2 (foldr + 0 '(3 4))))
+= (+ 1 (+ 2 (+ 3 (foldr + 0 '(4)))))
+= (+ 1 (+ 2 (+ 3 (+ 4 0))))
+= (+ 1 (+ 2 (+ 3 4)))
+= (+ 1 (+ 2 7))
+= (+ 1 9)
+= 10
+```
+
+The basic pattern is that `foldr` goes through the list left to right to create
+a big expression: `(+ 1 (+ 2 (+ 3 (+ 4 0))))`. And then the expression is
+evaluated in the usual way according to the brackets.
+
+## length as a right fold
+
+The `(length L)` function can be written like this:
+
+```lisp
+(define (length L)
+  (foldr (lambda (next acc) (+ acc 1)) 
+         0 
+         L))
+
+> (length '())
+0
+> (length '(a))
+1
+> (length '(a b c d))
+4
+```
+
+The key idea is the folding function is `(lambda (next acc) (+ acc 1))`. This is
+a binary function that takes two inputs: the `next` element of the list, and the
+`acc`umulated value of the previous calls to the folding function.
+
+Calling `(foldr op 0 '(a b c))` gives this:
+
+```
+(foldr op 0 '(a b c))
+= (op a (op b (op c 0)))
+```
+
+`op` is `(lambda (next acc) (+ acc 1))`, so we we do one step of evaluation we
+get:
+
+```
+(foldr op 0 '(a b c))
+= (op a (op b (op c 0)))
+= (op a (op b (+ 0 1)))
+```
+
+The `c` disappears because the body of `op` adds 1 to the accumulated value.
+Continuing this process, the calls to `op` are evaluated in the usual way:
+
+```
+(foldr op 0 '(a b c))
+= (op a (op b (op c 0)))
+= (op a (op b (+ 0 1)))
+= (op a (op b 1))
+= (op a (+ 1 1))
+= (op a 2)
+= (+ 2 1)
+= 3
+```
+
+### member has a right fold
+
+The `(member x L)` function can be written like this:
+
+```lisp
+(define (member x L)
+  (foldr (lambda (next acc) (or (eq? next x) acc))
+         #f
+         L))
+```
+
+For example, `(member? 3 '(1 2 3 4))` evaluates to:
+
+```lisp
+(or (equal? 1 3)
+    (or (equal? 2 3)
+        (or (equal? 3 3)  ;; a match!
+            (or (equal? 4 3) #f))))
+```
+
+### append as a right fold
+
+The `(append A B)` function can be written as this simple right fold:
+
+```lisp
+(define (append A B)
+  (foldr cons B A))
+
+> (append '(1 2 3) '(a b))
+'(1 2 3 a b)
+```
+
+Tracing this:
+
+```
+(append '(1 2 3) '(a b))
+= (foldr cons '(a b) '(1 2 3))
+= (cons 1 (cons 2 (cons 3 '(a b))))
+= (cons 1 (cons 2 '(3 a b)))
+= (const 1 '(2 3 a b))
+= '(1 2 3 a b)
+```
+
+## map and filter as a right folds
+
+The `(map f L)` function can be written as a right fold:
+
+```lisp
+(define (map f L)
+  (foldr (lambda (next acc) (cons (f next) acc))
+         '()
+         L))
+
+> (map list '(a b c d))
+'((a) (b) (c) (d))
+```
+
+To understand this, look at the folding function `(lambda (next acc) (cons (f
+next) acc))`. Intuitively, it applies `f` to each `next` element of the list,
+and then pushes the result onto the front of the accumulated values.
+
+`(filter pred? L)` can be written as a right fold:
+
+```lisp
+(define (filter pred? L)
+  (foldr (lambda (next acc)
+           (cond [(pred? next)
+                  (cons next acc)]
+                 [else
+                  acc]))
+         '()
+         L))
+
+> (filter even? '(1 2 3 4))
+'(2 4)
+```
+
+The folding function for `filter` is a little more complex. It checks if the
+`next` element satisfies `pred?`. If it does, it pushes it onto the front of the
+accumulated values. If it does not, it skips the element and keeps the
+accumulated values as is.
 
 ### deep-count of a list
 
@@ -1105,8 +1485,6 @@ Coming soon!
 
 Coming soon!
 
-Coming soon!
-
-  ### quicksort with filter
+### quicksort with filter
 
 Coming soon!
