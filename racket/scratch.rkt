@@ -579,6 +579,7 @@
 
 (define add-cherry (c_cons 'cherry))
 
+
 ;; Moses Schonfinkel
 ;; Haskell Curry
 
@@ -589,7 +590,7 @@
 ;;
 ;; little
 ;;
-(define (I x) x)
+#;(define (I x) x)
 
 (define (M x) (x x))
 ;; (M M)
@@ -602,4 +603,23 @@
 (define (S3 x y z)
   ((x z) (y z)))
 
-(define (I a) ((S K K) a))
+(define S       ;; curried version of S3
+  (lambda (x)   ;; can be passed 0, 1, 2, or 3 arguments
+    (lambda (y)
+      (lambda (z)
+        ((x z) (y z))))))
+
+;; I can be written in terms of S and K (!)
+(define (I z) (S3 K K z))
+  
+#;(define (I a) (((S K) K) a))
+
+
+;; Question: what is (S3 I I z) ?
+
+;; Example: the flip function
+(define (flip f)
+  (lambda (x y) (f y x)))
+
+
+

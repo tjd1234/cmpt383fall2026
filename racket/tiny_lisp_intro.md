@@ -2232,8 +2232,8 @@ is `'a`. Thus `((S K K) 'a)` evaluates to the same thing as `(S3 K K 'a)`.
 
 Following the definition of `S3`, `(S3 K K 'a)` evaluates to `((K 'a) (K 'a))`.
 `(K 'a)` returns a function that always returns `'a` so `((K 'a) (K 'a))`
-evaluates to `'a`. And so `((S K K) 'a)` evaluates to `'a`, which means `(S K
-K)` is the identity function.
+evaluates to `'a`. Thus `((S K K) 'a)` evaluates to `'a`, which means `(S K K)`
+is the identity function.
 
 ### Completeness of S and K
 
@@ -2267,7 +2267,8 @@ own little language different from Tiny Lisp.
 ### Checking Valid Expressions
 
 The first thing we will write is a function that checks if an expression is a
-valid propositional logic for our expression. We'll call this a **recognizer function**, since it recognizes valid expressions.
+valid propositional logic for our expression. We'll call this a **recognizer
+function**, since it recognizes valid expressions.
 
 We consider the following to be valid expressions:
 
@@ -2379,21 +2380,21 @@ like this:
      #f]
     [(is-true? e) 
      #t]
-    [(is-not? e)
+    [(is-not? e) ;; (not p)
      (not (eval-prop-bool (second e)))]
-    [(is-and? e)
+    [(is-and? e) ;; (p and q)
      (and (eval-prop-bool (first e)) 
           (eval-prop-bool (third e)))]
-    [(is-or? e)
+    [(is-or? e) ;; (p or q)
      (or (eval-prop-bool (first e)) 
          (eval-prop-bool (third e)))]
-    [(is-nand? e)
+    [(is-nand? e) ;; (p nand q)
      (not (and (eval-prop-bool (first e))
                (eval-prop-bool (third e))))]
-    [(is-implies? e)
+    [(is-implies? e) ;; (p implies q)
      (or (not (eval-prop-bool (first e)))
          (eval-prop-bool (third e)))]
-    [(is-iff? e)
+    [(is-iff? e) ;; (p iff q)
      (equal? (eval-prop-bool (first e))
              (eval-prop-bool (third e)))]
     [else 
@@ -2481,7 +2482,8 @@ Another interesting application is to simplify an expression. For example, the
 **double negation elimination rule** says that any expression of the form `(not
 (not p))` is logically equivalent to `p`.
 
-Lets write a function that removes double negations:
+Lets write a function that removes double negations (`map` is the standard map
+function defined earlier):
 
 ```lisp
 ;; double negation elimination
@@ -2489,19 +2491,16 @@ Lets write a function that removes double negations:
 (define (simplify e)
   (cond [(symbol? e)
          e]
-        [(and (is-not? e) ;; e = (not (not p))
+        [(and (is-not? e)    ;; e = (not (not p))
               (is-not? (second e)))
          (simplify (second (second e)))]
-        [(is-not? e) ;; e = (not p)
-         (list 'not (simplify (second e)))]
-        [(is-and? e) ;; e = (p and q)
-         (list (simplify (first e))
-               'and
-               (simplify (third e)))]
-        [(is-or? e) ;; e = (p or q)
-         (list (simplify (first e))
-               'or
-               (simplify (third e)))]
+        [(or (is-not? e)     ;; e = (not p)
+             (is-and? e)     ;; e = (p and q)
+             (is-or? e)      ;; e = (p or q)
+             (is-nand? e)    ;; e = (p nand q)
+             (is-implies? e) ;; e = (p implies q)
+             (is-iff? e))    ;; e = (p iff q)
+         (map simplify e)]
         [else
          (error "simplify: unknown expression")]))
 
