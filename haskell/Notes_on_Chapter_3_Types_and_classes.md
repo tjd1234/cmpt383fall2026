@@ -1,17 +1,18 @@
 # Notes on Chapter 3: Types and classes
 
 A **type** is a collection of related values. For example, the Haskell type
-`Bool` has two value, `True` and `False`.
+`Bool` has two values, `True` and `False`.
 
 In Haskell, if `v` is a value and `t` is a type, then `v :: t` means `v` is of
 type `t`. This is read "`v` has type `t`". 
 
 If `s` is a type and `t` is a type, then `s -> t` is the type of a *function*
 that takes a value of type `s` as input and returns a value of type `t` as
-output. We say that the functions **maps** an input of type `S` to an output of
+output. We say that the functions **maps** an input of type `s` to an output of
 type `t`.
 
-`::` can indicate the type of an expression, e.g.:
+`::` indicates the type of an expression, e.g.:
+
 - `False :: Bool` says `False` has the type `Bool`
 - `True :: Bool` says `True` has the type `Bool`
 - `not :: Bool -> Bool` says `not` is a function that takes a `Bool` as input
@@ -25,12 +26,8 @@ safe** language in the sense that there will never be a type error during the
 *evaluation* of an expression.
 
 > **Comparison** Python, Racket, and Javascript are languages that are *not*
-> type safe in this sense. They can suffer type errors during evaluation.
-> Languages like C++ and Java *are* type safe in most cases.
-
-> **Note** For more details about type inference, check out the [Hindley-Milner
-> type
-> system](https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system).
+> type safe. They can suffer type errors during evaluation. Languages like C++
+> and Java *are* type safe in most cases.
 
 ## Type Inference
 
@@ -57,7 +54,11 @@ Haskell automatically infer that `not Bool` has the type `Bool`, i.e. `not Bool
 
 It can also help us find **type errors**. For example, 3 is *not* of type
 `Bool`, and so `not 3` contains a type error. Haskell catches type errors
-*before* it evaluates the expression. 
+*before* it evaluates the expression.
+
+> **Note** For more details about type inference, check out the [Hindley-Milner
+> type
+> system](https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system).
 
 ## Some basic Haskell types
 
@@ -88,12 +89,14 @@ you should know:
 > Float` .
 
 ## List types
+
 A Haskell **list** is a sequence of 0 or more elements of the *same* type.
 
 > **Comparison** Lists in Python or Racket can contain values of different
 > types. Arrays and vectors in C++ can only contain values of the same type.
 
 If a list has elements of type `t`, the type of the list is `[t]`:
+
 - `[False,False,True] :: [Bool]`
 - `['s','h','o','e'] :: [Char]`
 - `["red","brown","yellow"] :: [String]`
@@ -103,6 +106,7 @@ The number of elements in a list is its *length*, or *size*. The empty list `[]`
 has length 0, a list with one element, e.g. `[False]` has length 1, and so on.
 
 A few facts about Haskell lists:
+
 - The type of a list tells you *nothing* about its length.
 - The elements of list must all be of the same type `t`, but there is no
   restriction on what `t` can be.
@@ -113,6 +117,7 @@ A few facts about Haskell lists:
 A **tuple** is a *finite sequence* of 0 or more values, and the values *can* be
 of different types. Haskell use `()`-brackets to indicate tuples and their
 types:
+
 - `(False,True) :: (Bool,Bool)`
 - `(False,'-',True) :: (Bool,Char,Bool)`
 - `("Yep",True,'z','!') :: (String,Bool,Char,Char)`
@@ -126,6 +131,7 @@ is `2 + 3` in brackets.
 > comma, e.g. `(2+3,)` is a tuple, while `(2+3)` is an arithmetic expression.
 
 A few facts about tuples:
+
 - The type of a tuples tells you its arity. 
 - The values in a tuple can be of any type, with no restrictions.
 - Tuple arities must be finite.
@@ -173,7 +179,7 @@ undefined result:
 `head` returns the first element of a list. But the empty list `[]` has no
 elements, and so `head []` causes an error.
 
-## Curried  functions
+## Curried functions
 
 Consider this definition:
 
@@ -184,8 +190,8 @@ add' x y = x + y
 
 The type signature tells us `add'` takes an `Int` as input, and returns a
 function of type `Int -> Int` as output. Usually, addition takes two inputs, but
-when defined like this Haskell lets you pass in just one parameter and returns a
-function that is ready to accept the second parameter.
+when defined like this Haskell lets you pass in just one parameter and get a
+function that is ready to accept the second parameter in return.
 
 `add' 5` returns a function that takes an `Int` as input, and returns 5 plus
 that `int` as a result:
@@ -237,8 +243,7 @@ function's output, and the others are the types of the input values.
 > is an *error* to call `f(8)`.
 
 > **Comparison** Racket does *not* curry functions by default, but it does have
-> a built-in `curry` function that can convert non-curried functions into
-> curried ones.
+> a `curry` function that can convert non-curried functions into curried ones.
 
 > **Comparison** JavaScript does *not* curry functions by default, but there are
 > libraries that provide that feature, such as [Ramda](https://ramdajs.com/).
@@ -259,8 +264,8 @@ Some list functions, such as `head`, work with lists of *any* type of elements:
 head :: [a] -> a
 ```
 
- `head`'s type is `[a] -> a`, where `a` is a **type variable** that can be
- replaced by *any* type. Type variables must always be written in *lowercase*.
+`head`'s type is `[a] -> a`, where `a` is a **type variable** that can be
+replaced by *any* type. Type variables must always be written in *lowercase*.
 
 When written by hand, Greek letters are often used for type variables, e.g.
 $[\alpha] \rightarrow \alpha$.

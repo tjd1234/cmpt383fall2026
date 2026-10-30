@@ -3,15 +3,30 @@
 ## Functional Programming
 
 Haskell is a programming language that supports pure functional programming.
-This is a style of programming that emphasizes the use of pure functions. In
-Haskell, functions are **first class objects**: they can be passed as
-parameters, and returned as values. 
+This is a style of programming that emphasizes the use of **pure functions**. A
+function is pure if:
+
+1. The output of the function depends only on the input to the function; and
+
+2. The function has no side-effects, i.e. it does not change the value of any
+   global variables.
+
+For example, the function `f(x) = x + 1` is pure because its returns value
+depends only on the input `x`, and it has no side-effects. Mathematical
+functions are almost always pure.
+
+But a function like `get_time()`, which returns the current time, is not pure
+because it every time you call it can return a different value. Functions that
+read/write files, or interact with the network, etc., are not pure.
+
+In most languages programs are a mix of pure and impure functions. But in
+Haskell, all functions are pure. This is a key feature that distinguishes
+Haskell from other languages.
 
 As an example of functional programming style, consider creating a list of the
 *even* numbers from 1 to 100.
 
-In a language like C++, you might start with an empty list an add even numbers
-up to 100:
+In C++, you might start with an empty list an add even numbers up to 100:
 
 ```cpp
 vector<int> nums;
@@ -22,7 +37,7 @@ for(int i = 1; i <= 100; i++) {
 }
 ```
 
-In Haskell you can  do this:
+In Haskell you would do this:
 
 ```haskell
 > filter even [1..100]
@@ -63,31 +78,20 @@ declare types (as in C++ or Java).
 
 ### Higher-order functions
 
-Haskell lets you pass functions as values to other functions, and even return
-functions as values. Functions that operate on functions is a powerful and
-useful technique that gives you new ways to solve many programming problems.
+Haskell lets you pass functions to functions, and return functions from
+functions. This is a powerful and useful technique that gives you new ways to
+solve and think about many programming problems.
 
 ### Effectful functions
 
-Haskell functions are **pure functions**, i.e. the output of Haskell function
-depends only on the input to the function, and the function has no side-effects
-(such as changing the value of a global variable). This is how mathematical
-functions work.
-
-However, pure functions can't do everything. For example, input and output is
-fundamentally impure. A function `read_string("story.txt")` that opens the file
-`story.txt` and returns its content as a string can't be a pure  because the
-returned string depends upon more than just the passed-in name of the file. The
-returned value also depends upon the contents of the file itself. It's possible
-that every time you call `read_string("story.txt")` you get a different string.
-
-Functions like `read_string` are called **impure functions**.
+Since Haskell functions are **pure functions**, which there is a big problem:
+how do you do things like read and write files, or generate random numbers ---
+things that are inherently impure?
 
 This is a tough problem, and most programming languages, including [Racket],
-just give up and let you write impure functions like `read_string` whenever you
-need them. But Haskell takes a different approach, and keeps its functions pure.
-To handle impure calculations, it uses clever functional patterns such as
-*monads* and *applicatives*.
+just give up and let you write impure functions whenever you need them. But
+Haskell takes a different approach, and keeps its functions pure by using a
+clever functional programming patterns such as *monads* and *applicatives*.
 
 ### Lazy evaluation
 
@@ -95,16 +99,16 @@ An unusual feature of Haskell is how it evaluates function calls like `f(g(2))`.
 In most programming languages, first `g(2)` is evaluated, and then the result of
 that is passed to `f`.
 
-But in Haskell, `g(2)` is passed to `f` *unevaluated*. Inside of `f` `g(2)` is
+But in Haskell, `g(2)` is passed to `f` *unevaluated*. Inside of `f`, `g(2)` is
 only evaluated when its result is *needed*. In other words, Haskell evaluates
 `g(2)` **lazily**, i.e. it holds off calculating `g(2)` until the last possible
 moment.
 
 This feature has a profound effect. Among other things, lazy evaluation lets us
-manipulate infinitely long lists, and implement our own versions of
-if-statements or short-circuited logical operators. Other languages either don't
-allow you to write such code, or require that you do it using **macros** (which
-are not functions).
+manipulate infinitely long lists, and use functions to implement things like
+if-statements or short-circuited logical operators. Other languages either
+*don't* allow you to write such code, or require that you do it using **macros**
+(which are not functions).
 
 ### Equational Reasoning
 
@@ -131,9 +135,8 @@ mathematical formalism that describes computation. It focuses on functions, and
 how they are applied to their inputs. It is the heart of functional programming.
 
 Haskell itself was initiated in 1987 by a group of programming language
-researchers, and its development continues to this day. While it has not yet
-become a mainstream language, Haskell has been a rich source of ideas, with many
-of its features adopted by more mainstream languages.
+researchers, and its development continues to this day. While it has not become
+a mainstream language, Haskell has been a rich source of ideas.
 
 ## A Taste of Haskell
 
@@ -151,8 +154,8 @@ This is a recursive definition. The first equation says the sum of the empty
 list `[]` is 0, and the second equation says the sum of a non-empty list is the
 first element of the list plus the sum of the rest of the list.
 
-`(x:xs)` matches `x` to the first item of the list, and `xs` to the rest of the.
-The expression `mysum xs` calls function `mysum` with input argument `xs`.
+`(n:ns)` matches `n` to the first item of the list, and `ns` to the rest of the.
+The expression `mysum ns` calls function `mysum` with input argument `ns`.
 
 It's instructive to trace a call to `mysum` by hand:
 
@@ -173,6 +176,7 @@ point type, or a number-like type created by the programmer.
 
 **Tip** In the Haskell interpreter, `:type` or `:t` will tell you the type of an
 expression:
+
 ```haskell
 > :t mysum
 mysum :: Num p => [p] -> p
@@ -185,10 +189,10 @@ doesn't matter.
 (+) :: Num a => a -> a -> a
 ```
 
-Haskell can often **infer** the type of an expression from context, and
-programmers don't need to write types explicitly in these cases. However, **type
-signatures** can provide useful information, and so we'll usually include them
-for functions. For instance:
+Haskell can often **infer** the type of an expression from context, so
+programmers don't always need to write types explicitly in these cases. However,
+function **type signatures** can provide useful information, and so we'll
+usually include them for functions. For instance:
 
 ```haskell
 mysum :: Num a => [a] -> a  -- type signature
@@ -198,8 +202,8 @@ mysum (n:ns) = n + mysum ns
 
 The token `::` is read "has type".
 
-We note here that Haskell has no loops. In their place, Haskell uses recursion
-and higher-order functions. 
+We note here that Haskell has no loops. Instead, Haskell uses recursion and
+higher-order functions. 
 
 There are also **no** modifiable variables in basic Haskell. Once you assign a
 value to variable, it never changes. As with the lack of loops, this can take
@@ -224,12 +228,12 @@ qsort (n:ns) = qsort smalls ++ [n] ++ qsort bigs
 
 `qsort` follows the general sorting strategy as quicksort. But it's not really
 quicksort since it makes *copies* of sub-lists instead of modifying them in
-place. This makes it much slower than regular quicksort.
+place. This makes it slower than regular quicksort.
 
 But on the plus side, the code is concise and quite understandable one you know
 what all the tokens mean. For example, `++` concatenates two lists, and
-expressions like `[a | a <- ns, a <= n]` are called **list comprehensions** and
-are often a convenient way to make new lists.
+expressions like `[a | a <- ns, a <= n]` are **list comprehensions** and are
+often a convenient way to make new lists.
 
 Finally, `qsort` works on both numbers and strings:
 
