@@ -11,12 +11,12 @@ function is pure if:
 2. The function has no side-effects, i.e. it does not change the value of any
    global variables.
 
-For example, the function `f(x) = x + 1` is pure because its returns value
+For example, the function `f(x) = x + 1` is pure because its return value
 depends only on the input `x`, and it has no side-effects. Mathematical
 functions are almost always pure.
 
 But a function like `get_time()`, which returns the current time, is not pure
-because it every time you call it can return a different value. Functions that
+because every time you call it can return a different value. Functions that
 read/write files, or interact with the network, etc., are not pure.
 
 In most languages programs are a mix of pure and impure functions. But in
@@ -26,7 +26,7 @@ Haskell from other languages.
 As an example of functional programming style, consider creating a list of the
 *even* numbers from 1 to 100.
 
-In C++, you might start with an empty list an add even numbers up to 100:
+In C++, you might start with an empty list and add even numbers up to 100:
 
 ```cpp
 vector<int> nums;
@@ -66,8 +66,8 @@ than the equivalent non-functional code. In the Haskell version we:
 Many Haskell features are explicitly designed with human readability in mind.
 Haskell programs can be short and relatively easy to read.
 
-But, to be fair, Haskell programs can sometimes so short and concise that they
-are hard to understand if you're not very familiar with the details.
+But, to be fair, Haskell programs can sometimes so be short and concise that
+they are hard to understand if you're not very familiar with the details.
 
 ### Powerful type system
 
@@ -84,14 +84,14 @@ solve and think about many programming problems.
 
 ### Effectful functions
 
-Since Haskell functions are **pure functions**, which there is a big problem:
-how do you do things like read and write files, or generate random numbers ---
-things that are inherently impure?
+Since Haskell functions are **pure functions**, which is a big problem: how do
+you do things like read and write files, or generate random numbers --- things
+that are inherently impure?
 
-This is a tough problem, and most programming languages, including [Racket],
-just give up and let you write impure functions whenever you need them. But
-Haskell takes a different approach, and keeps its functions pure by using a
-clever functional programming patterns such as *monads* and *applicatives*.
+This is a tough problem, and most programming languages, including Lisp, just
+give up and let you write impure functions whenever you need them. But Haskell
+takes a different approach, and keeps its functions pure by using functional
+programming patterns such as *monads* and *applicatives*.
 
 ### Lazy evaluation
 
@@ -154,8 +154,8 @@ This is a recursive definition. The first equation says the sum of the empty
 list `[]` is 0, and the second equation says the sum of a non-empty list is the
 first element of the list plus the sum of the rest of the list.
 
-`(n:ns)` matches `n` to the first item of the list, and `ns` to the rest of the.
-The expression `mysum ns` calls function `mysum` with input argument `ns`.
+`(n:ns)` matches `n` to the first item of the list, and `ns` to the rest of the
+list. The expression `mysum ns` calls function `mysum` with input argument `ns`.
 
 It's instructive to trace a call to `mysum` by hand:
 
@@ -206,11 +206,11 @@ We note here that Haskell has no loops. Instead, Haskell uses recursion and
 higher-order functions. 
 
 There are also **no** modifiable variables in basic Haskell. Once you assign a
-value to variable, it never changes. As with the lack of loops, this can take
+value to a variable, it never changes. As with the lack of loops, this can take
 some getting used to, and requires different programming strategies for solving
 many problems.
 
-## Sorting
+### Sorting
 
 This function sorts lists:
 
@@ -220,17 +220,15 @@ qsort (n:ns) = qsort smalls ++ [n] ++ qsort bigs
              where smalls = [a | a <- ns, a <= n]
                    bigs   = [b | b <- ns, b > n]
 
-> qsort [4,3,5,5,3,3,2,2,2,2,0,9]
-[0,2,2,2,2,3,3,3,4,5,5,9]
-> qsort "SimonFraserUniversity"
-"FSUaeeiiimnnorrrsstvy"
+> qsort [7,1,8,5,1]
+[1,1,5,7,8]
 ```
 
-`qsort` follows the general sorting strategy as quicksort. But it's not really
+`qsort` follows the same general strategy as quicksort. But it's not really
 quicksort since it makes *copies* of sub-lists instead of modifying them in
-place. This makes it slower than regular quicksort.
+place. This makes it slower than regular quicksort in languages like C++.
 
-But on the plus side, the code is concise and quite understandable one you know
+But on the plus side, the code is concise and quite understandable once you know
 what all the tokens mean. For example, `++` concatenates two lists, and
 expressions like `[a | a <- ns, a <= n]` are **list comprehensions** and are
 often a convenient way to make new lists.
@@ -252,4 +250,5 @@ qsort :: Ord a => [a] -> [a]
 ```
 
 `Ord` is a type class for values that can be compared. `qsort` can sort a list
-of any values that implement `Ord`, which includes numbers and strings.
+of any values that implement `Ord`, which includes numbers and characters (and
+therefore strings.

@@ -8,7 +8,7 @@ type `t`. This is read "`v` has type `t`".
 
 If `s` is a type and `t` is a type, then `s -> t` is the type of a *function*
 that takes a value of type `s` as input and returns a value of type `t` as
-output. We say that the functions **maps** an input of type `s` to an output of
+output. We say that the function **maps** an input of type `s` to an output of
 type `t`.
 
 `::` indicates the type of an expression, e.g.:
@@ -17,23 +17,25 @@ type `t`.
 - `True :: Bool` says `True` has the type `Bool`
 - `not :: Bool -> Bool` says `not` is a function that takes a `Bool` as input
   and returns a `Bool` as output
-- `not False :: Bool` says that the expression `not False` evaluates to an
-  expression of type `Bool`
+- `not False :: Bool` says that the expression `not False` evaluates to a value
+  of type `Bool`
 
-Every expression in Haskell has a type, and most types can be checked *before* a
+Every expression in Haskell has a type, and types are checked *before* a
 program runs. This is called **static type checking**. Haskell is a **type
 safe** language in the sense that there will never be a type error during the
 *evaluation* of an expression.
 
-> **Comparison** Python, Racket, and Javascript are languages that are *not*
-> type safe. They can suffer type errors during evaluation. Languages like C++
-> and Java *are* type safe in most cases.
+> **Comparison** Python, Racket, and Javascript are dynamically typed languages
+> that do not usually catch type errors until runtime. Languages like C++ and
+> Java are statically type and can catch most types errors at compile-time, but
+> not all.
+
 
 ## Type Inference
 
 Haskell also uses **type inference** to determine the type of a value without
-the programmer needing to have to explicitly write the type. This is one of the
-things that makes Haskell programs so concise.
+the programmer needing to explicitly write the type. This is one of the things
+that makes Haskell programs so concise.
 
 For instance, suppose `f` is a function that maps an argument of type `a` to a
 result of type `b`. We write `f :: a -> b` to indicate this. Suppose also that
@@ -49,7 +51,7 @@ Therefore:         f e :: b
 ```
 
 For example, since `not :: Bool -> Bool` and `True :: Bool`, this rule lets
-Haskell automatically infer that `not Bool` has the type `Bool`, i.e. `not Bool
+Haskell automatically infer that `not True` has the type `Bool`, i.e. `not True
 :: Bool`.
 
 It can also help us find **type errors**. For example, 3 is *not* of type
@@ -67,14 +69,15 @@ you should know:
 
 - `Bool`, logical values `True` and `False`
 - `Char`, single Unicode characters, such as `'a'`, `'A'`, `'8'`, `'\n'`, ...
-- `String`, sequences of characters, such as `""`, `"cat"`, `"hello\nworld!""`, ....
-- `Int`, fixed precision integers from $-2^{63}$ to $-2^{63}-1$; you can write
-  `25 :: Int` to force a number to be an `Int` instead of some other numeric
-  type
+- `String`, sequences of characters, such as `""`, `"cat"`, `"hello\nworld!"`,
+  ...
+- `Int`, fixed precision integers from $-2^{63}$ to $-2^{63}-1$ (assuming
+  64-bits); you can write `25 :: Int` to force a number to be an `Int` instead
+  of some other numeric type
 - `Integer`, arbitrary-precision integers, i.e. integers that can be as big as
   you need; `25 :: Integer` forces 25 to be of type `Integer`
 
-> **Note** `int` values are typically the ints used by hardware, and so are
+> **Note** `Int` values are typically the ints used by hardware, and so are
 > usually more efficient in time and memory than `Integer` values.
 
 > **Comparison** Python and Racket use arbitrary-precision integers by default,
@@ -155,7 +158,7 @@ add (x, y) = x + y
 range :: Int -> [Int]      -- type signature
 range n = [0..n]
 
-twice :: (Int -> Int) -> Int -> int -- type signature
+twice :: (Int -> Int) -> Int -> Int -- type signature
 twice f x = f (f x)
 ```
 
@@ -174,6 +177,7 @@ undefined result:
 ```haskell
 > head []
 *** Exception: Prelude.head: empty list
+...
 ```
 
 `head` returns the first element of a list. But the empty list `[]` has no
@@ -265,7 +269,8 @@ head :: [a] -> a
 ```
 
 `head`'s type is `[a] -> a`, where `a` is a **type variable** that can be
-replaced by *any* type. Type variables must always be written in *lowercase*.
+replaced by *any* type. Type variables must always start with a *lowercase*
+letter.
 
 When written by hand, Greek letters are often used for type variables, e.g.
 $[\alpha] \rightarrow \alpha$.
@@ -322,15 +327,15 @@ looks like this:
 ```
 
 The first arrow is `=>`, a "fat" arrow. The expression `Num a` is called a
-**class constraint**, and says that the type variable `a` must satisfy *all* the
-constraints in the `Num` class. `Int`, `Integer`, and `Double` all satisfy
-`Num`, and so you can use `(+)` with those types of numbers, e.g.:
+**class constraint**, and says that the type variable `a` must be an instance of
+the `Num` class. `Int`, `Integer`, and `Double` all satisfy `Num`, and so you
+can use `(+)` with those types of numbers, e.g.:
 
 ```haskell
 > 23 + 40
 63
 > 2.3 + 4.0
-6.0
+6.3
 ```
 
 Literal numeric values can have different concrete types depending upon the
@@ -388,7 +393,7 @@ Numbers, strings, characters, and bools all satisfy `Eq`. A list of type `[t]`
 satisfies `Eq` just when type `t` satisfies `Eq`. Functions, in general, do
 *not* satisfy `Eq`.
 
-`Ord` is for **ordinal types**, that is, types that can be compared using `<`,
+`Ord` is for **ordered types**, that is, types that can be compared using `<`,
 `<=`, etc.:
 
 ```haskell
@@ -401,10 +406,10 @@ satisfies `Eq` just when type `t` satisfies `Eq`. Functions, in general, do
 ```
 
 Numbers, strings, characters, and bools all satisfy `Ord`. A list of type `[t]`
-satisfies `Ord` just when type `t` satisfies `Eq`. Comparisons on strings and
+satisfies `Ord` just when type `t` satisfies `Ord`. Comparisons on strings and
 lists are **lexicographical**, i.e. they check order value-by-value starting at
-the left and moving right. For strings, lexicographical are the standard
-alphabetic comparisons.
+the left and moving right. For strings, lexicographical comparisons give
+standard alphabetic order.
 
 The `:info` command displays information about type classes:
 
@@ -509,11 +514,11 @@ brackets, otherwise Haskell interprets `signum -3` as `signum` minus `3`:
 ```haskell
 > signum -3
 
-<interactive>:16:1: error:
-    • Non type-variable argument in the constraint: Num (a -> a)
-      (Use FlexibleContexts to permit this)
-    • When checking the inferred type
-        it :: forall a. (Num a, Num (a -> a)) => a -> a
+<interactive>:2:1: error:
+    • No instance for (Show (Integer -> Integer))
+        arising from a use of ‘print’
+        (maybe you haven't applied a function to enough arguments?)
+    • In a stmt of an interactive GHCi command: print it
 ```
 
 To avoid this confusion we often need to put negative numbers in brackets.
