@@ -149,22 +149,21 @@ elements are removed:
 Calling and evaluating functions in Haskell is a little different than most
 languages. Suppose function `g` takes a single input. You call it on value `x`
 by writing `g x`. We say that `g` is **applied** to `x`, and the entire
-expression is an example of **function application**. No brackets are needed,
-although we will sometimes write `(g x)` to prevent ambiguity.
+expression is a **function application**. No brackets are needed, although we
+will sometimes write `(g x)` to prevent ambiguity.
 
-Suppose function `f` takes three inputs. You call it by writing `f a b c`.
+Now suppose function `f` takes three inputs. You call it by writing `f a b c`.
 Again, no brackets are needed, and spaces (not commas) are used to separate the
 inputs. The **order of evaluation** is the same as if we'd written `((f a) b)
 c)`. In other words, when `f a b c` means first apply `f` to `a`, and then apply
 the result of that to `b`, and then apply the result of that to `c`. Function
-application is **left associative**.
+application is thus **left associative**.
 
 Order of evaluation is especially important when you are dealing with multiple
 functions. Suppose you want to evaluate $g(g(x))$. In Haskell, you'd write `g (g
 x)`. The brackets are necessary to force `g x` to be evaluated first. If you
 wrote `g g x`, then Haskell would call `(g g) x`, i.e. it would first apply `g`
-to `g`, and then apply the result of that to `x`. This is not what we want in
-this case!
+to `g`, and then apply the result of that to `x`.
 
 ## Naming Requirements
 
@@ -240,6 +239,7 @@ sum [1..100]
 ```
 
 ## A Few Simple Function  Definitions
+
 ```haskell
 -- returns 2*x
 double x = x + x

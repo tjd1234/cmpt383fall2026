@@ -25,8 +25,8 @@ The type signature shows that `f` takes a value of type `a` as input, and
 returns a value of type `a` as output.
 
 > **Note** `twice reverse x` returns `x` for any list `x`, since reversing a
-> list twice gives the original list. Chapter 16 of the book mathematically
-> gives a formal mathematical proof that this is true.
+> list twice gives the original list. Chapter 16 of the book gives a formal
+> mathematical proof that this is true.
 
 This function returns a function as a value:
 
@@ -55,9 +55,9 @@ The type signature `Int -> Int -> Int` says two arguments are needed, but thanks
 to currying we can pass in only a single argument to make functions like
 `plus5`.
 
-> **Note** Haskell lets you use the ``'`` character in the name of a function.
-> It doesn't have any special meaning to Haskell. Instead of `makeAdder'`, we
-> could have used a name like `makeAdder2`.
+> **Note** Haskell lets you use the `'` character in the name of a function. It
+> doesn't have any special meaning to Haskell. Instead of `makeAdder'`, we could
+> have used a name like `makeAdder2`.
 
 ### Example: the flip function
 
@@ -79,7 +79,7 @@ For example:
 `(-) x y` evaluates to `x - y`, while `flip (-) x y` evaluates to `y - x`.
 
 The `map` function takes a function as its first input, and a list as its second
-input. Using `flip`, we can change the order of these parameters:
+input. `flip` lets us change the order of these parameters:
 
 ```haskell
 > map (+1) [2,3,4]
@@ -141,7 +141,7 @@ Include the most general type signature for `doublemap`.
 ### filter
 
 The standard `filter pred lst` function returns a list containing all the
-elements of `lst` that satisfy the predicate `pred`. For example:
+elements of `lst` that satisfy the predicate `pred`:
 
 ```haskell
 > filter (>2) [1,6,0,4,2]
@@ -254,7 +254,7 @@ the elements at the *start* of `lst` that satisfy `pred`. For instance:
 "ea"
 ```
 
-``\c -> c `elem` "aeiou"`` is a lambda function  that takes a character as input
+`\c -> c `elem` "aeiou"` is a lambda function  that takes a character as input
 and returns `True` just when it's a lowercase vowel.
 
 Here's a recursive implementation:
@@ -334,10 +334,8 @@ As part of your answer, include the most general type signature for the
 
 ## The `foldr` function
 
-`foldr` and `foldl` implement a recursive pattern that appears in many
-functions. So we begin with two concrete examples of folding functions.
-
-`mysum lst` sums the elements of `lst`:
+`foldr` implement a recursive pattern that appears in many functions. `mysum
+lst` sums the elements of `lst`:
 
 ```haskell
 mysum :: Num a => [a] -> a
@@ -350,7 +348,7 @@ mysum (x:xs) = x + mysum xs
 9.1
 ```
 
-It's instructive to trace out a calculation with `mysum` step-by-step:
+It's instructive to trace out a calculation step-by-step:
 
 ```haskell
 mysum [4,1,2]
@@ -364,10 +362,10 @@ mysum [4,1,2]
 ```
 
 In particular, notice the expression `4 + (1 + (2 + 0))`. Due to the bracketing,
-the individual sub-expressions are evaluated from right to left, and so this is
-a **right fold**.
+the individual sub-expressions are evaluated from right to left, and this is
+called a **right fold**.
 
-`myprod lst` calculates the product of the elements on `lst`:
+`myprod lst` calculates the product of the elements of `lst`:
 
 ```haskell
 myprod :: Num a => [a] -> a
@@ -389,7 +387,7 @@ differences:
 
 This similarity suggests we can write a higher-order function that does the same
 thing, taking the base-case value and operator as input. A function that does
-this is often called **right fold**, or **fold right**:
+this is called **right fold**, or **fold right**:
 
 ```haskell
 myfoldr :: (a -> b -> b) -> b -> [a] -> b
@@ -406,7 +404,7 @@ myfoldr op emptyval (x:xs) = x `op` (myfoldr op emptyval xs)
 
 `myfoldr` is a *right* fold, which means it evaluates operators starting at the
 right. For example, to calculate the sum `1+2+3`, right fold calculates `(1 + (2
-+ (3 + 0)))`.  The `(+)` operator happens to be **commutative**, meaning that it
++ (3 + 0)))`. The `(+)` operator happens to be **commutative**, meaning that it
 doesn't matter what order you do addition in, e.g.  `a + b == b + a` for all
 numbers `a` and `b`. So the exact order of additions *doesn't* matter for `(+)`.
 
@@ -487,7 +485,7 @@ But it becomes easier to answer if you think about right folds in terms of it's
 [])))`. `:` is the *cons*, or *construction* operator, and `x:xs` evaluates to a
 list that starts with `x` and is followed by the elements of `xs`.
 
-The expression `myfoldr (+) 0 [2,1,3,4]` can be re-written  `myfoldr (+) 0 (2 :
+The expression `myfoldr (+) 0 [2,1,3,4]` can be re-written  \`myfoldr (+) 0 (2 :
 (1 : (3 : (4 : []))))`. You can think of `myfold` as replacing each `:` with
 `+`, and the `[]` with 0: `2 + (1 + (3 + (4 + 0)))`.
 
@@ -537,7 +535,7 @@ right fold will look like this:
 ```
 
 To evaluate reverse using `foldr`, we need to find an `op` and `init` that
-transforms `1 op (2 op (3 op init))` into `[3,2,1]`.  Looking at `3 op init`, we
+transforms `1 op (2 op (3 op init))` into `[3,2,1]`. Looking at `3 op init`, we
 want it to evaluate to `[3]`. That would give us `1 op (2 op [3])`, and here we
 want `2 op [3]` to evaluate to `[3,2]`. So `op` appends its first input to the
 *end* of its second input:
@@ -602,7 +600,7 @@ myfoldl _  init []     = init
 myfoldl op init (x:xs) = myfoldl op (init `op` x) xs
 ```
 
-To get a taste for how fold left works, let's step through an example:
+To get a taste for how fold left works, let's trace an example:
 
 ```haskell
 myfoldl (+) 0 [1,2,3]
@@ -626,14 +624,14 @@ are the same. The elements of the list are all passed as the second argument to
 argument. Finally, the return type must be the same as the first argument to
 `(+)`.
 
-The implementation of `myfoldr` is **tail recursive**, i.e. the *last* thing the
-recursive equation does is call `myfoldr`. Tail recursive functions can be
+The implementation of `myfoldl` is **tail recursive**, i.e. the *last* thing the
+recursive equation does is call `myfoldl`. Tail recursive functions may be
 automatically converted into a loop using a trick called **tail call
 optimization**, and the result usually runs faster and uses less memory than
 recursion.
 
 An interesting consequence of these definitions of fold is that **`foldl` can
-work with infinite lists** in some cases, thanks  to Haskell's lazy evaluation
+work with infinite lists** in some cases, thanks to Haskell's lazy evaluation
 strategy. But `foldr` **cannot** work with infinite lists because the first
 thing it does is recursively evaluate the rest of the list, and for an infinite
 list this will go on forever.
@@ -744,8 +742,8 @@ sumSquaresEven = sum . map (^2) . filter even
 ```
 
 `(.)` greatly simplifies the definition. It's read from right to left: first
-`filter even` is applied to the list, then `map (^2)` is applied the result of
-the filter, and finally `sum` is applied to the result of the map.
+`filter even` is applied to the list, then `map (^2)` is applied to the result
+of the filter, and finally `sum` is applied to the result of the map.
 
 Expressions like `sum . map (^2) . filter even` are sometimes called **function
 pipelines**, because they apply a series of functions in order, one after the

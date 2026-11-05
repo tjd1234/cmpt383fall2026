@@ -11,17 +11,19 @@ function is pure if:
 2. The function has no side-effects, i.e. it does not change the value of any
    global variables.
 
-For example, the function `f(x) = x + 1` is pure because its return value
+For example, the function `f(x) = x + 1` is *pure* because its return value
 depends only on the input `x`, and it has no side-effects. Mathematical
-functions are almost always pure.
+functions are always pure.
 
-But a function like `get_time()`, which returns the current time, is not pure
+But a function like `get_time()`, which returns the current time, is *not* pure
 because every time you call it can return a different value. Functions that
 read/write files, or interact with the network, etc., are not pure.
 
-In most languages programs are a mix of pure and impure functions. But in
+In most languages programs freely mix of pure and impure functions. But in
 Haskell, all functions are pure. This is a key feature that distinguishes
 Haskell from other languages.
+
+### Functional Programming Example
 
 As an example of functional programming style, consider creating a list of the
 *even* numbers from 1 to 100.
@@ -46,10 +48,11 @@ In Haskell you would do this:
 76,78,80,82,84,86,88,90,92,94,96,98,100]
 ```
 
-Both `filter` and `even` are functions. `even n` is true just when `n` is an
-even number. `filter` takes two inputs, the function `even` and the expression
-`[1..100]` (which generates the numbers from 1 to 100). `filter` is an example
-of a **higher-order function**, because it takes another function as input.
+Both `filter` and `even` are functions. `even n` returns true just when `n` is
+an even number. `filter` takes two inputs, the function `even` and the
+expression `[1..100]` (which generates the numbers from 1 to 100). `filter` is
+an example of a **higher-order function**, because it takes another function as
+input.
 
 In many cases, functional code is shorter and simpler (once you understand it!)
 than the equivalent non-functional code. In the Haskell version we:
@@ -174,7 +177,7 @@ returns a value of type `a` as output. The type `a` is any number type that
 satisfies the **type class** `Num`. `a` could be an integer type, a floating
 point type, or a number-like type created by the programmer.
 
-**Tip** In the Haskell interpreter, `:type` or `:t` will tell you the type of an
+**Tip** In the Haskell interpreter, `:type` or `:t` tells you the type of an
 expression:
 
 ```haskell
@@ -190,9 +193,9 @@ doesn't matter.
 ```
 
 Haskell can often **infer** the type of an expression from context, so
-programmers don't always need to write types explicitly in these cases. However,
-function **type signatures** can provide useful information, and so we'll
-usually include them for functions. For instance:
+programmers don't always need to write types explicitly . However, function
+**type signatures** can provide useful information, and so we'll usually include
+them. For instance:
 
 ```haskell
 mysum :: Num a => [a] -> a  -- type signature
@@ -202,13 +205,13 @@ mysum (n:ns) = n + mysum ns
 
 The token `::` is read "has type".
 
-We note here that Haskell has no loops. Instead, Haskell uses recursion and
+Note that Haskell has no loops. Instead, Haskell relies on recursion and
 higher-order functions. 
 
 There are also **no** modifiable variables in basic Haskell. Once you assign a
-value to a variable, it never changes. As with the lack of loops, this can take
-some getting used to, and requires different programming strategies for solving
-many problems.
+value to a Haskell variable, it never changes. As with the lack of loops, this
+can take some getting used to, and requires different programming strategies for
+solving many problems.
 
 ### Sorting
 
@@ -225,8 +228,8 @@ qsort (n:ns) = qsort smalls ++ [n] ++ qsort bigs
 ```
 
 `qsort` follows the same general strategy as quicksort. But it's not really
-quicksort since it makes *copies* of sub-lists instead of modifying them in
-place. This makes it slower than regular quicksort in languages like C++.
+quicksort since it *copies* sub-lists instead of modifying them in place. This
+makes it slower than regular quicksort in languages like C++.
 
 But on the plus side, the code is concise and quite understandable once you know
 what all the tokens mean. For example, `++` concatenates two lists, and
@@ -251,4 +254,4 @@ qsort :: Ord a => [a] -> [a]
 
 `Ord` is a type class for values that can be compared. `qsort` can sort a list
 of any values that implement `Ord`, which includes numbers and characters (and
-therefore strings.
+therefore strings).

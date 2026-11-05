@@ -4,7 +4,8 @@ Since Haskell has no loops, recursion is a fundamental implementation technique.
 
 ## Basic concepts
 
-A **recursive function** is a function that calls itself, either directly or indirectly.
+A **recursive function** is a function that calls itself, either directly or
+indirectly.
 
 For example, the **factorial** of a non-negative integer $n$ is defined to be
 $n!=1\cdot 2 \cdot 3 \cdot \ldots \cdot n$, and $0!=1$.
@@ -69,6 +70,7 @@ For example:
 ```
 
 ## Recursion on lists
+
 Recursion often applies naturally to lists. For instance, the product of all the
 numbers on a list can be calculated like this:
 
@@ -177,6 +179,7 @@ number of times `a` occurs in `lst`. For example:
 Include the most general type signature for `count`.
 
 ### Challenge: selection sort
+
 Here is a Haskell implementation of selection sort:
 
 ```cpp
@@ -221,8 +224,9 @@ Implement the following functions:
    In general, `is_unique (uniquify s)` always returns `True`.
 
 ## Advice on recursion
+
 The textbook provides more examples and advice for writing recursive functions.
 
 Despite their usefulness, in Haskell recursive functions tend to be avoided.
-Recursion a somewhat low-level technique, and it is often better to use, say,
-list comprehensions or higher-order functions like `map` and `zip`.
+Recursion is a low-level technique, and it is often better to use, say, list
+comprehensions or higher-order functions like `map` and `zip`.

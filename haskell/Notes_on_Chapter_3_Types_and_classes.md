@@ -4,7 +4,7 @@ A **type** is a collection of related values. For example, the Haskell type
 `Bool` has two values, `True` and `False`.
 
 In Haskell, if `v` is a value and `t` is a type, then `v :: t` means `v` is of
-type `t`. This is read "`v` has type `t`". 
+type `t`, and is read "`v` has type `t`". 
 
 If `s` is a type and `t` is a type, then `s -> t` is the type of a *function*
 that takes a value of type `s` as input and returns a value of type `t` as
@@ -29,7 +29,6 @@ safe** language in the sense that there will never be a type error during the
 > that do not usually catch type errors until runtime. Languages like C++ and
 > Java are statically type and can catch most types errors at compile-time, but
 > not all.
-
 
 ## Type Inference
 
@@ -146,7 +145,7 @@ a function that takes a value of type `a` as input and returns a value of type
 `b` as output. For example:
 
 - `not :: Bool -> Bool`
-- `even :: Int -> Bool` (tests if a number is even)
+- `even :: Int -> Bool`
 
 The input type and result type can be any types, including lists, tuples, or
 even other functions. For example:
@@ -216,6 +215,7 @@ mult x y z = x * y * z
 ```
 
 Currying lets you pass the inputs to `mult` one at a time:
+
 - `mult 8` returns a function that takes an `Int` as input and has the type `Int
   -> (Int -> Int)`
 - `mult 8 7` returns a function that takes an `Int` as input that has type `Int
@@ -318,8 +318,7 @@ interpreter.
 
 ## Overloaded types
 
-Haskell's `+` function works with any numeric type, and it's type signature
-looks like this:
+Haskell's `+` function works with any numeric type, and it's type signature is:
 
 ```haskell
 > :type (+)
@@ -379,7 +378,7 @@ the values of the first list followed by all the values of the second list.
 ## Basic classes
 
 Haskell provides a number of pre-defined type classes used throughout the
-standard prelude. Classes must always start with a capital letter.
+standard prelude.
 
 `Eq` is for **equality types**. These are types that can be compared using
 `(==)` and `(/=)` (not equal):

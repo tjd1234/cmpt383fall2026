@@ -4,7 +4,7 @@ Haskell has many different ways to define functions.
 
 ## New from old
 
-Perhaps the most common way to define a new Haskell function is to use a set of
+Perhaps the most common way to define a Haskell function is to use a set of
 equations. For example:
 
 ```haskell
@@ -272,8 +272,7 @@ coin_bug1 n | 1         = "penny"
 
 ### Explain the bug: same_bug1
 
-In your own words, explain the bug in this code, and how you would fix it (i.e.
-re-write the code so it works):
+In your own words, explain the bug in this code, and how you would fix it:
 
 ```haskell
 same_bug1 :: Int -> Int -> Bool
@@ -281,8 +280,8 @@ same_bug1 _ _ = False
 same_bug1 a a = True
 ```
 
-The intention is that the function return `True` when its two inputs are the
-same, and `False` otherwise. However, it doesn't work correctly.
+The function is meant to return `True` when its two inputs are the same, and
+`False` otherwise. However, it doesn't work correctly.
 
 ### Example: nand
 
@@ -328,7 +327,7 @@ get_x :: (Double, Double) -> Double
 get_x (x, _) = x
 
 get_y :: (Double, Double) -> Double
-get_y (y, _) = y
+get_y (_, y) = y
 ```
 
 ## List patterns
@@ -390,8 +389,8 @@ separately, e.g.:
 
 ```haskell
 firsts_list1 :: [a] -> [a] -> [a]
-firsts_list1 [] _        = []
-firsts_list1 _ []        = []
+firsts_list1 []    _     = []
+firsts_list1 _     []    = []
 firsts_list1 (x:_) (y:_) = [x, y]
 ```
 
@@ -423,8 +422,6 @@ applications of `:` like this:
 `4:2:6:1:[]`. We will sometimes call lists written in the form `4:2:6:1:[]` the
 **consed-out** form of the list. 
 
-> **Comparison** `cons`  in Racket works the same was `:` in this case.
-
 ### Challenge: length of short lists
 
 Implement a function called `short_length lst` that returns 0 if `lst` is empty,
@@ -448,20 +445,20 @@ re-write the code so it works):
 
 ```haskell
 diff_heads_bug1 :: [a] -> [a] -> Bool
-diff_heads_bug1 [] _        = True
-diff_heads_bug1 _ []        = True
+diff_heads_bug1 []    _     = True
+diff_heads_bug1 _     []    = True
 diff_heads_bug1 (x:_) (y:_) = False
-diff_heads_bug1 _ _         = True
+diff_heads_bug1 _     _     = True
 ```
 
-The intention is that `diff_heads_bug1 a b` returns  `False` if the heads of the
+The intention is that `diff_heads_bug1 a b` returns `False` if the heads of the
 lists are the same, and `True` in every other case.
 
 ## Lambda expressions
 
 **Lambda expressions**, or **lambda functions**, can be thought of as functions
-without names. In practice they can be useful when you need a small function
-that is only used once or twice.
+without names. They are often useful when you need a small function that is only
+used once or twice.
 
 For example, `\x -> x*x` is a lambda expression. It's a function that takes a
 single input, `x`, and then returns its square:
