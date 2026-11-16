@@ -15,12 +15,12 @@ twice f x = f (f x)
 7
 > twice (*2) 5
 20
-> twice reverse "apple"
+> twice reverse "apple" -- reversing twice gives the original list
 "apple"
 ```
 
-The type signature shows that `f` takes a value of type `a` as input, and
-returns a value of type `a` as output.
+The type signature shows that `f` takes two inputs: a function of type `a -> a`,
+and then a value of type `a`. It returns a value of type `a` as output.
 
 > **Note** `twice reverse x` returns `x` for any list `x`, since reversing a
 > list twice gives the original list. Chapter 16 of the book gives a formal
@@ -53,7 +53,7 @@ The type signature `Int -> Int -> Int` says two arguments are needed, but thanks
 to currying we can pass in only a single argument to make functions like
 `plus5`.
 
-> **Note** Haskell lets you use the `'` character in the name of a function. It
+> **Note** Haskell allows the `'` character in a function name. It
 > doesn't have any special meaning to Haskell. Instead of `makeAdder'`, we could
 > have used a name like `makeAdder2`.
 
@@ -61,9 +61,9 @@ to currying we can pass in only a single argument to make functions like
 
 `flip` is a standard Haskell function that takes a two-input function `f` as
 input, and returns a two-input function as output that does the same thing as
-`f` except the order of the input arguments is swapped. In practice, `flip` is
-usually used as a helper function to change the order of the parameters of a
-function, which can be useful some situations.
+`f` except the order of the input arguments to `f` are swapped. In practice,
+`flip` is usually used as a helper function to change the order of the
+parameters of a function, which can be useful some situations.
 
 For example:
 
@@ -100,8 +100,8 @@ parameters switched.
 
 ## Processing lists
 
-A number of standard Haskell functions have nice recursive definitions, and it's
-instructive to create our own implementations.
+It's instructive to create our own implementations of some standard Haskell
+functions.
 
 ### map
 
@@ -168,7 +168,7 @@ myfilter p (x:xs) = if p x
 > to `True`, we say **`x` satisfies `p`**. If instead `p x` evaluates to
 > `False`, we  say **`x` doesn't satisfy `p`**, or **`x` fails to satisfy `p`**.
 
-So we can say that `filter p lst` return all the elements in `lst` that satisfy
+So we can say that `filter p lst` returns all the elements in `lst` that satisfy
 `p`.
 
 ### Challenge: removeIf
