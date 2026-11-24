@@ -4,7 +4,15 @@ Many of the following notes are based on the book [Programming in Haskell, 2nd e
 
 To run Haskell, follow the instructions on the [Haskell website](https://www.haskell.org/).
 
-Here is the [Haskell problem set](Haskell_problemset.md).
+Here is are some practice problems:
+
+- [practice.hs](practice.hs) ([solutions](practice_sol.hs)) is an AI-organized
+  version of the lecture notes found in [example.hs](example.hs) and
+  [example_sol.hs](example_sol.hs). Try to do all the problems, and use the
+  solutions to check your answers or get hints.
+
+- [Haskell problem set](Haskell_problemset.md) is another set of practice
+  problems.
 
 The in-class Haskell quiz will be based on these notes:
 

@@ -136,7 +136,7 @@ plus = \x y -> x + y
 -- twice function
 -- twice f x = f (f x)
 twice f = f . f
-tail2 = twice tail
+-- tail2 = twice tail
 
 -- makeAdder
 -- returns a function that adds n to its argument
@@ -179,18 +179,24 @@ mymap f (x:xs) = (f x) : (mymap f xs)
 -- sorted list L. Assume L is a sorted list, and x is the same type as items on
 -- L.
 
--- ??
+insert :: Ord a => a -> [a] -> [a]
+insert x []     = [x]
+insert x (y:ys) | x < y     = x : y : ys
+                | otherwise = y : (insert x ys)
 
 -- Implement insertion_sort lst to that sorts lst using insertion sort (use the
 -- insert function to help). Use basic recursion and no higher-order functions.
 -- Also write the most general type signature.
 
 -- insertion sort
--- ??
+insertion_sort :: Ord a => [a] -> [a]
+insertion_sort []      = []
+insertion_sort (x:xs) = insert x (insertion_sort xs)
 
 -- Implement insertion_sort' that implements insertion sort using foldr and the
 -- insert function from above.
--- ??
+insertion_sort' :: Ord a => [a] -> [a]
+insertion_sort' lst = foldr insert [] lst
 
 --
 -- agree f g x is a helper function that checks if functions f and g returns the
@@ -205,13 +211,17 @@ mymap f (x:xs) = (f x) : (mymap f xs)
 -- > check [7,4,2,9,3,5,2,2,1]
 --
 
--- ??
+agree :: Eq b => (a -> b) -> (a -> b) -> a -> Bool
+agree f g x = (f x) == (g x)
 
 --
 -- Implement quicksort
 --
-
--- ??
+quicksort :: Ord a => [a] -> [a]
+quicksort []           = []
+quicksort (pivot:rest) = (quicksort smalls) ++ [pivot] ++ (quicksort bigs)
+                       where smalls = filter (<=pivot) rest
+                             bigs   = filter (>pivot)  rest
 
 --
 -- all bit strings of length n
@@ -225,7 +235,10 @@ mymap f (x:xs) = (f x) : (mymap f xs)
 -- ["0000000000","0000000001","0000000010"]
 --
 
--- ??
+bits :: Int -> [String]
+bits 0 = [[]]
+bits n = map ('0':) bs ++ map ('1':) bs
+       where bs = bits (n - 1)
 
 
 --
@@ -236,7 +249,8 @@ mymap f (x:xs) = (f x) : (mymap f xs)
 -- evaluation.
 --
 
--- ??
+range :: Int -> [Int]
+range n = take n [0..]
 
 
 --
@@ -247,6 +261,13 @@ mymap f (x:xs) = (f x) : (mymap f xs)
 -- Write a function called isPrime :: Int -> Bool that such that isPrime n
 -- returns True if n is a prime, and False otherwise.
 --
+isPrime :: Int -> Bool
+isPrime n = n > 1 && all nonDivisor candidates
+            where nonDivisor d = n `mod` d /= 0
+                  leqSquare d = d * d <= n
+                  candidates = takeWhile leqSquare [2..]
+
+primes = filter isPrime [2..]
 
 -- idea: if all the numbers from 2 up to and including the square root of n
 -- *don't* divide evenly into n, then n must be a prime
@@ -269,3 +290,47 @@ mymap f (x:xs) = (f x) : (mymap f xs)
 -- 2 then 3 is returned, ...
 
 -- ??
+
+
+type Predicate a = a -> Bool
+remove_if :: Predicate a -> [a] -> [a]
+remove_if pred = filter (not . pred)
+
+
+data Light = Red | Yellow | Green
+  deriving (Eq, Show)
+
+change :: Light -> Light
+change Red    = Green
+change Yellow = Red
+change Green  = Yellow
+
+data Shape = Circle Float | Rect Float Float
+  deriving Show
+
+area :: Shape -> Float
+area (Circle r) = pi * r ^ 2
+area (Rect w h) = w * h
+
+-- first :: [a] -> a
+-- first = head
+
+safeFirst :: [a] -> Maybe a
+safeFirst []    = Nothing
+safeFirst (x:_) = Just x
+
+safeMinimum :: Ord a => [a] -> Maybe a
+safeMinimum [] = Nothing
+safeMinimum xs = Just (minimum xs)
+
+add :: Maybe Int -> Maybe Int -> Int
+add Nothing Nothing   = 0
+add Nothing (Just n)  = n
+add (Just m) Nothing  = m
+add (Just m) (Just n) = m + n
+
+add' :: Maybe Int -> Maybe Int -> Maybe Int
+add' Nothing  Nothing  = Nothing
+add' Nothing  (Just n) = Nothing
+add' (Just m) Nothing  = Nothing
+add' (Just m) (Just n) = Just (m + n)

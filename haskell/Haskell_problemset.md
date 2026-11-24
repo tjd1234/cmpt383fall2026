@@ -90,22 +90,18 @@ write a function `halves` that divides every number in a list by 2.
 
 ## Question 9: Pythagorean triples
 
-Use a *list comprehension* to write a function `triples n` that returns all
-Pythagorean triples `(a,b,c)` with `1 <= a < b < c <= n` and `a^2 + b^2 =
-c^2`. Include the type signature.
+Write a function `triples n` that returns all Pythagorean triples `(a,b,c)` with
+`1 <= a < b < c <= n` and `a^2 + b^2 = c^2`. Include the type signature.
 
 ```haskell
 > triples 20
 [(3,4,5),(5,12,13),(6,8,10),(8,15,17),(9,12,15),(12,16,20)]
 ```
 
-## Question 10: Comprehension with guards
+## Question 10: A List Pattern
 
 Write a function `notDivisible n` that returns all the numbers from 1 to `n`
 that are **not** evenly divisible by 3 or by 5.
-
-Do it in two different ways: one *with* a list comprehension, and *without* a
-list comprehension.
 
 ## Question 11: Recursive power
 
