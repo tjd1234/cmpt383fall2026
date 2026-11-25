@@ -396,12 +396,12 @@ operator,  then it becomes ``1 `Cons` (2 `Cons` (3 `Cons` Nil))``. Recalling how
 `List a`:
 
 ```haskell
-hlist2list :: [a] -> List a
-hlist2list = foldr Cons Nil
+fromList :: [a] -> List a
+fromList = foldr Cons Nil
 
-> hlist2list [1,2,3]
+> fromList [1,2,3]
 Cons 1 (Cons 2 (Cons 3 Nil))
-> hlist2list "apple"
+> fromList "apple"
 Cons 'a' (Cons 'p' (Cons 'p' (Cons 'l' (Cons 'e' Nil))))
 ```
 
@@ -417,18 +417,18 @@ foldright op init (Cons x xs) = x `op` (foldright op init xs)
 We can convert a `List` to a regular Haskell list with recursion:
 
 ```haskell
-list2hlist :: List a -> [a]
-list2hlist Nil         = []
-list2hlist (Cons x xs) = x : (list2hlist xs)
+toList :: List a -> [a]
+toList Nil         = []
+toList (Cons x xs) = x : (toList xs)
 ```
 
 Or using `foldright`:
 
 ```haskell
-list2hlist :: List a -> [a]
-list2hlist = foldright (:) []
+toList :: List a -> [a]
+toList = foldright (:) []
  
-> list2hlist (Cons 'a' (Cons 'p' (Cons 'p' (Cons 'l' (Cons 'e' Nil)))))
+> toList (Cons 'a' (Cons 'p' (Cons 'p' (Cons 'l' (Cons 'e' Nil)))))
 "apple"
 ```
 

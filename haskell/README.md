@@ -11,6 +11,9 @@ Here is are some practice problems:
   [example_sol.hs](example_sol.hs). Try to do all the problems, and use the
   solutions to check your answers or get hints.
 
+- [list.hs](list.hs) ([solutions](list_sol.h)) was used in the Wed Nov 25 class,
+  to demonstrate the `List` data type
+
 - [Haskell problem set](Haskell_problemset.md) is another set of practice
   problems.
 
