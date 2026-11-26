@@ -30,12 +30,12 @@ The in-class Haskell quiz will be based on these notes:
     - [Haskell Chapter 7 Practice Questions](Haskell_Chapter_7_Practice_Questions.md)
 - (1 hour) [Approval Voting in Haskell](Approval_Voting_in_Haskell.md) (extended example)
 - (1 hour) [Notes on Chapter 8 Declaring types and classes](Notes_on_Chapter_8_Declaring_types_and_classes.md)
-- (1 hour) [introduction to do-notation](do_blocks/)
 
 Notes past this line are extra notes on Haskell, and will only be covered if
 there is time. If they are not discussed in class, they will **not** appear on
 the in-class quiz or the final exam:
 
+- (1 hour) [introduction to do-notation](do_blocks/)
 - (1 hour) [Notes on Chapter 10 Interactive programming](Notes_on_Chapter_10_Interactive_programming.md)
 - (2 hour) [Notes on Chapter 12 Monads and more](Notes_on_Chapter_12_Monads_and_more.md)
 - (1 hour): [Testing with QuickCheck](Testing_with_QuickCheck.md)
